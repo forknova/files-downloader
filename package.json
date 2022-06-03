@@ -3,6 +3,9 @@
   "license": "MIT",
   "type": "module",
   "version": "1.0.0",
+  "engines" : {
+    "node" : ">=16.0.0"
+  },
   "dependencies": {
     "node-fetch": "^3.2.3"
   },

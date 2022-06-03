@@ -1,6 +1,6 @@
 import fs from 'fs';
 import fetch from 'node-fetch';
-import data from './config.json'
+import data from './config.json' assert { type: 'json' };
 
 const store = data.store;
 const accessToken = data.accessToken;
