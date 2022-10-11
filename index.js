@@ -4,7 +4,7 @@ import data from './config.json' assert { type: 'json' };
 
 const store = data.store;
 const accessToken = data.accessToken;
-const apiVersion = '2022-04';
+const apiVersion = '2022-10';
 const apiLocation = '/admin/api/';
 
 const shopGraphQl = 'https://' + store + apiLocation + apiVersion + '/graphql.json';
@@ -66,26 +66,19 @@ function getFiles (cursor = null) {
         }
         ... on MediaImage {
           image {
-            originalSrc: url
+            url
           }
         }
-        ...VideoFragment
-        fileErrors {
-          code
-          details
-          message
+        ... on Video {
+          originalSource {
+            url
+          }
         }
       }
     }
     pageInfo {
       hasNextPage
     }
-  }
-}
-
-fragment VideoFragment on Video {
-  originalSource {
-    url
   }
 }`})
     }
@@ -97,15 +90,17 @@ fragment VideoFragment on Video {
       if(result.data.files.edges.length) {
         result.data.files.edges.forEach(({node}) => {
           let file
-          if (node.url) {
+          if (node?.url) {
             file = node.url
-          } else if (node.image.originalSrc) {
-            file = node.image.originalSrc
-          } else if (node.originalSource.url) {
+          } else if (node?.image?.url) {
+            file = node.image.url
+          } else if (node?.originalSource?.url) {
             file = node.originalSource.url
           }
 
-          files.push(file)
+          if (file) {
+            files.push(file)
+          }
         });
 
          if (result.data.files.pageInfo.hasNextPage) {
